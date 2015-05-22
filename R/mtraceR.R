@@ -256,8 +256,12 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
 #' Calculate Bayes Factor
 #' 
 #' \code{BF} calculates log Bayes factors (LBF) of all models compared against 
-#' the model that has highest log likelihood. The models are then ranked based 
+#' the model that has the highest log likelihood. The models are then ranked based 
 #' on LBF (mod.rank) and the model probability (mod.prob) is calculated.
+#' 
+#' A LBF value of -2 (or smaller) indicates support for reference model (the 
+#' model that has the highest log likelihood). Values smaller than -6 indicate a 
+#' strong evidence in favour of the reference model (Kass and Raftery 1995).
 #' 
 #' @param lmLs Numeric vector with log marginal likelihood values of the models
 #' @return A data.frame with log Bayes factors (LBF), the models' ranks 
