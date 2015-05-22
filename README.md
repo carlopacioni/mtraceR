@@ -18,5 +18,5 @@ install.packages("devtools")
 Pending
 
 ## Citation
-If you use `traceR`, please cite:
+If you use `mtraceR`, please cite:
 Pending
