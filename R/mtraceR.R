@@ -76,8 +76,6 @@ NULL
 #' @import data.table
 #' @import coda
 #' @export
-
-
 mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL, 
                    trim=TRUE, bayesallfile=NULL, dir.in=NULL, dir.out=NULL, 
                        save2disk=TRUE) {
@@ -170,7 +168,8 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
     dir.in <- dirname(full.path)
   } else {
     if(is.null(bayesallfile)) bayesallfile <- "bayesallfile.gz"
-    if(is.null(dir.in)) dir.in <- choose.dir("Select the folder where migate-n output files are")
+    if(is.null(dir.in)) 
+      dir.in <- choose.dir("Select the folder where migate-n output files are")
   }
   
   if(is.null(dir.out)) dir.out <- dir.in
@@ -179,10 +178,10 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
   rl <- readLines(paste0(dir.in, "/", bayesallfile), n=100)
   patt <- grep(pattern = "^# @@@@@@@@", rl)
   
-  h <- make.names(read.table(paste0(dir.out, "/", bayesallfile), header=F, skip=patt, nrow=1, 
-                             colClasses="character"))
-  data <- read.table(paste0(dir.out, "/", bayesallfile), header=F, skip=patt + 1, colClasses="numeric", 
-                     comment.char="")
+  h <- make.names(read.table(paste0(dir.out, "/", bayesallfile), 
+                             header=F, skip=patt, nrow=1, colClasses="character"))
+  data <- read.table(paste0(dir.out, "/", bayesallfile), header=F, skip=patt + 1, 
+                     colClasses="numeric", comment.char="")
   tot.npar <- npop^2
   if(is.null(estim.npar)) estim.npar <- tot.npar
   cutoff <- 2 + tot.npar - estim.npar + if(heating == TRUE) nchain
@@ -254,7 +253,21 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
               gelm.diag=if(repl > 1) g.diag else NULL))
 }
 
-
+#' Calculate Bayes Factor
+#' 
+#' \code{BF} calculates log Bayes factors (LBF) of all models compared against 
+#' the model that has highest log likelihood. The models are then ranked based 
+#' on LBF (mod.rank) and the model probability (mod.prob) is calculated.
+#' 
+#' @param lmLs Numeric vector with log marginal likelihood values of the models
+#' @return A data.frame with log Bayes factors (LBF), the models' ranks 
+#' (mod.rank) and the models' probability (mod.prob).
+#' @export
+#' @examples
+#' # From migrate-n tutotial: 'Comparison of gene flow models using
+#' # Bayes Factors' (Beerli 2010)
+#'  mod.comp <- BF(c(-4862.85, -4860.58, -4863.08, -4887.25))
+#'  mod.comp
 BF <- function(lmLs=NULL) {
   # error handling
   if(!is.numeric(lmLs)) stop("Please, pass a numeric vector of log 

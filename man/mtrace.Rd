@@ -33,19 +33,19 @@ matrix is used)}
 }
 \value{
 a list with the ESS for each locus, a summary of ESS across all loci
-  and Gelamn's diagnostic if more replicates were run
+  and Gelamn's diagnostic if more replicates were run. See details for
+  additional outputs when \code{save2dis=TRUE}.
 }
 \description{
-\code{mtrace} parses migrate-n output file (bayesallfile) and generates trace
-and density plots for each locus and each replicate. It also calculates
-Effective Sample Size (ESS).
+\code{mtrace} parses migrate-n output file (bayesallfile) and calculates the
+Effective Sample Size (ESS) for each locus. If \code{save2dis=TRUE} these
+are also saved to disk together with a PDF with the trace and density plots
+for each locus and each replicate.
 }
 \details{
-If \code{save2dis=TRUE} the results are also saved to disk.
-
 If there is more than 1 replicate, \code{mtrace} returns also Gelman and
 Rubin's convergence diagnostic for each locus. When \code{save2dis=TRUE}
-relevant diagnostic plots are also saved as PDF.
+relevant diagnostic plots are also saved as a separate PDF.
 
 When no bayesallfile name and directory are provided (default), the output
 file is selected with an iteractive window. Alternatively, when the directory
