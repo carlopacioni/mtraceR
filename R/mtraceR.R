@@ -63,8 +63,10 @@ NULL
 #' @param burn.in Length of burn-in as proportion of MCMC (default: 0.1)
 #' @param npop The number of populations in the analysis
 #' @param estim.npar The number of estimated parameters (when a custom migration 
-#' matrix is used)
-#' @param trim Whether trim data to estimated parameters (default:  TRUE)
+#'   matrix is used)
+#' @param trim Whether trim data to estimated parameters (i.e. theta and M. 
+#'   default:  TRUE)
+#' @param thin the thinning interval of recorded steps of trace plots
 #' @param bayesallfile The name of the bayesallfile (default: NULL)
 #' @param dir.in The local folder containing migrate-n output files (default: NULL) 
 #' @param dir.out The local path to store the results. If NULL (default) then
@@ -77,8 +79,8 @@ NULL
 #' @import coda
 #' @export
 mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL, 
-                   trim=TRUE, bayesallfile=NULL, dir.in=NULL, dir.out=NULL, 
-                       save2disk=TRUE) {
+                   trim=TRUE, thin=10, bayesallfile=NULL, dir.in=NULL, 
+                   dir.out=NULL, save2disk=TRUE) {
     
   #----------------------------------------------------------------------------#
   # Helper funstions
@@ -233,9 +235,19 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
     
     pdf(file=paste0(dir.out, "/", "TracePlots_burninRemoved.pdf"))
     if(trim == TRUE) {
-      lapply(i, plot.with.name, x=l.mlLocus.mrepltr)
+      if(thin > 1) {
+        after.thin <- lapply(l.mlLocus.mrepltr, window, thin=thin)
+        lapply(i, plot.with.name, x=after.thin)
+      } else {
+        lapply(i, plot.with.name, x=l.mlLocus.mrepltr)
+      }
     } else {
+      if(thin > 1) {
+        after.thin <- lapply(l.mlLocus.mrepl, window, thin=thin)
+        lapply(i, plot.with.name, x=after.thin)
+      } else {
       lapply(i, plot.with.name, x=l.mlLocus.mrepl)
+      }
     }
     
     dev.off()
