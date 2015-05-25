@@ -189,6 +189,8 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
   h <- c(h, rep("EMPTY", tot.npar - estim.npar))
   names(data) <- h
   repl <- length(unique(data$Replicate))
+  message("Done!")
+  message("Data processing started")
   
   l.locus <- split(data[, 2:parlast], data$Locus)
   l.locus.repl <- lapply(l.locus, byRepl)
@@ -205,8 +207,10 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
   
   ###-------------------------- Gelman diagnostic ---------------------------###
   if(repl > 1) {
+    message("Calculating Gelman's diagnostic")
     g.diag <- lapply(l.mlLocus.mrepl, gelman.diag, autoburnin=FALSE, 
                      multivariate = F)
+    message("Done!")
   }
   
   
