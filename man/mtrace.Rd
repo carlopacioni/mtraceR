@@ -5,8 +5,8 @@
 \title{Diagnostics of migrate-n MCMC chains}
 \usage{
 mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
-  estim.npar = NULL, trim = TRUE, bayesallfile = NULL, dir.in = NULL,
-  dir.out = NULL, save2disk = TRUE)
+  estim.npar = NULL, trim = TRUE, thin = 1, bayesallfile = NULL,
+  dir.in = NULL, dir.out = NULL, save2disk = TRUE)
 }
 \arguments{
 \item{heating}{Whether heating is used: (\code{TRUE} or \code{FALSE})}
@@ -21,6 +21,8 @@ mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
 matrix is used)}
 
 \item{trim}{Whether trim data to estimated parameters (default:  TRUE)}
+
+\item{thin}{the thinning interval of recorded steps}
 
 \item{bayesallfile}{The name of the bayesallfile (default: NULL)}
 
