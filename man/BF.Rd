@@ -15,8 +15,13 @@ A data.frame with log Bayes factors (LBF), the models' ranks
 }
 \description{
 \code{BF} calculates log Bayes factors (LBF) of all models compared against
-the model that has highest log likelihood. The models are then ranked based
+the model that has the highest log likelihood. The models are then ranked based
 on LBF (mod.rank) and the model probability (mod.prob) is calculated.
+}
+\details{
+A LBF value of -2 (or smaller) indicates support for reference model (the
+model that has the highest log likelihood). Values smaller than -6 indicate a
+strong evidence in favour of the reference model (Kass and Raftery 1995).
 }
 \examples{
 # From migrate-n tutotial: 'Comparison of gene flow models using
