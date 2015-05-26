@@ -5,7 +5,7 @@
 \title{Diagnostics of migrate-n MCMC chains}
 \usage{
 mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
-  estim.npar = NULL, trim = TRUE, thin = 1, bayesallfile = NULL,
+  estim.npar = NULL, trim = TRUE, thin = 10, bayesallfile = NULL,
   dir.in = NULL, dir.out = NULL, save2disk = TRUE)
 }
 \arguments{
@@ -20,9 +20,10 @@ mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
 \item{estim.npar}{The number of estimated parameters (when a custom migration
 matrix is used)}
 
-\item{trim}{Whether trim data to estimated parameters (default:  TRUE)}
+\item{trim}{Whether trim data to estimated parameters (i.e. theta and M.
+default:  TRUE)}
 
-\item{thin}{the thinning interval of recorded steps}
+\item{thin}{the thinning interval of recorded steps of trace plots}
 
 \item{bayesallfile}{The name of the bayesallfile (default: NULL)}
 
