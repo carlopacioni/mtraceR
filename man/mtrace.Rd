@@ -4,9 +4,9 @@
 \alias{mtrace}
 \title{Diagnostics of migrate-n MCMC chains}
 \usage{
-mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
-  estim.npar = NULL, trim = TRUE, thin = 10, bayesallfile = NULL,
-  dir.in = NULL, dir.out = NULL, save2disk = TRUE)
+mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, trim = TRUE,
+  thin = 10, bayesallfile = NULL, dir.in = NULL, dir.out = NULL,
+  save2disk = TRUE)
 }
 \arguments{
 \item{heating}{Whether heating is used: (\code{TRUE} or \code{FALSE})}
@@ -14,11 +14,6 @@ mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, npop = 1,
 \item{nchain}{Number of chains if \code{heating=TRUE}}
 
 \item{burn.in}{Length of burn-in as proportion of MCMC (default: 0.1)}
-
-\item{npop}{The number of populations in the analysis}
-
-\item{estim.npar}{The number of estimated parameters (when a custom migration
-matrix is used)}
 
 \item{trim}{Whether trim data to estimated parameters (i.e. theta and M.
 default:  TRUE)}

@@ -38,6 +38,30 @@
 #' @name mtraceR
 NULL
 
+#------------------------------------------------------------------------------#
+# Data
+#------------------------------------------------------------------------------#
+
+#' @name mtDNA_4popsSt
+#' @title Example of \code{mtrace} output 
+#' @description \code{mtrace} output from a run (with no replicate) using sequence 
+#'   data (mtDNA) with 4 sampling sites connected by a stepping stone migration 
+#'   model between either sites 1 or 2 and 3 and 4
+#'   (i.e. migration model: {* * 0 *   * * 0 *   0 0 * *   * * * *}). 
+#' @usage data(mtDNA_4popsSt)
+#' @format a \code{list} with 3 named elelments.
+#' @source Pacioni et al. In prep. 
+NULL
+
+#' @name ms_3popsSt
+#' @title Example of \code{mtrace} output 
+#' @description \code{mtrace} output from a run (with 7 replicates) using 
+#'   microsatellite data with 4 sampling sites grouped in three populations 
+#'   connected by a stepping stone migration model. 
+#' @usage data(ms_3popsSt)
+#' @format a \code{list} with 3 named elelments.
+#' @source Pacioni et al. In prep. 
+NULL
 
 #' Diagnostics of migrate-n MCMC chains
 #' 
@@ -61,9 +85,6 @@ NULL
 #' @param heating Whether heating is used: (\code{TRUE} or \code{FALSE})
 #' @param nchain Number of chains if \code{heating=TRUE}
 #' @param burn.in Length of burn-in as proportion of MCMC (default: 0.1)
-#' @param npop The number of populations in the analysis
-#' @param estim.npar The number of estimated parameters (when a custom migration 
-#'   matrix is used)
 #' @param trim Whether trim data to estimated parameters (i.e. theta and M. 
 #'   default:  TRUE)
 #' @param thin the thinning interval of recorded steps of trace plots
@@ -78,8 +99,8 @@ NULL
 #' @import data.table
 #' @import coda
 #' @export
-mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL, 
-                   trim=TRUE, thin=10, bayesallfile=NULL, dir.in=NULL, 
+mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE, 
+                   thin=10, bayesallfile=NULL, dir.in=NULL, 
                    dir.out=NULL, save2disk=TRUE) {
     
   #----------------------------------------------------------------------------#
@@ -181,19 +202,25 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, npop=1, estim.npar=NULL,
   patt <- grep(pattern = "^# @@@@@@@@", rl)
   
   h <- make.names(read.table(paste0(dir.out, "/", bayesallfile), 
-                             header=F, skip=patt, nrow=1, colClasses="character"))
-  data <- read.table(paste0(dir.out, "/", bayesallfile), header=F, skip=patt + 1, 
-                     colClasses="numeric", comment.char="")
-  tot.npar <- npop^2
-  if(is.null(estim.npar)) estim.npar <- tot.npar
-  cutoff <- 2 + tot.npar - estim.npar + if(heating == TRUE) nchain
-  parlast <- length(h) - cutoff 
-  h <- c(h, rep("EMPTY", tot.npar - estim.npar))
-  names(data) <- h
+                           header=F, skip=patt, nrow=1, colClasses="character"))
+  ncols <- dim(read.table(paste0(dir.out, "/", bayesallfile), header=FALSE, 
+                          nrows=10, skip=patt + 1, colClasses="numeric", 
+                          comment.char=""))[2]
+  col.c <- c(rep("numeric", length(h)), rep("NULL", ncols - length(h)))
+  col.n <- c(h, rep("NULL", ncols - length(h)))
+  data <- read.table(paste0(dir.out, "/", bayesallfile), header=FALSE, 
+                     skip=patt + 1, colClasses=col.c, comment.char="", 
+                     col.names=col.n)
+  parlast <- length(h) - 1 - (if (heating == TRUE) nchain + 1)
   repl <- length(unique(data$Replicate))
+  if(repl > 1) {
+    message(paste("Detected", repl, "replicates"))
+  } else {
+    message("No replicates detected")
+  }
   message("Done!")
-  message("Data processing started")
   
+  message("Data processing started")
   l.locus <- split(data[, 2:parlast], data$Locus)
   l.locus.repl <- lapply(l.locus, byRepl)
   burn <- burn.in * dim(l.locus.repl[[1]][[1]])[1]
