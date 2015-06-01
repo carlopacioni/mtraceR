@@ -1,0 +1,7 @@
+"","time","alloc","release","dups","ref","src"
+"1",94.8999999999989,215.31,88.569,199,"mtraceR.R#211","mtrace/read.table"
+"2",0.1,1.519,0,13,"mtraceR.R#215","mtrace/unique    "
+"3",7.1,92.387,96.614,789,"mtraceR.R#224","mtrace/split     "
+"4",207.899999999993,6673.22,6123.434,259826,"mtraceR.R#225","mtrace/lapply    "
+"5",0.3,6.975,0,254,"mtraceR.R#280","mtrace/dev.off   "
+"6",72.8000000000001,5416.267,5629.028,260780,"mtraceR.R#287","mtrace/lapply    "
