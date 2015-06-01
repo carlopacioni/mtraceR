@@ -201,14 +201,14 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE,
   rl <- readLines(paste0(dir.in, "/", bayesallfile), n=100)
   patt <- grep(pattern = "^# @@@@@@@@", rl)
   
-  h <- make.names(read.table(paste0(dir.out, "/", bayesallfile), 
+  h <- make.names(read.table(paste0(dir.in, "/", bayesallfile), 
                            header=F, skip=patt, nrow=1, colClasses="character"))
-  ncols <- dim(read.table(paste0(dir.out, "/", bayesallfile), header=FALSE, 
+  ncols <- dim(read.table(paste0(dir.in, "/", bayesallfile), header=FALSE, 
                           nrows=10, skip=patt + 1, colClasses="numeric", 
                           comment.char=""))[2]
   col.c <- c(rep("numeric", length(h)), rep("NULL", ncols - length(h)))
   col.n <- c(h, rep("NULL", ncols - length(h)))
-  data <- read.table(paste0(dir.out, "/", bayesallfile), header=FALSE, 
+  data <- read.table(paste0(dir.in, "/", bayesallfile), header=FALSE, 
                      skip=patt + 1, colClasses=col.c, comment.char="", 
                      col.names=col.n)
   parlast <- length(h) - 1 - (if (heating == TRUE) nchain + 1)
