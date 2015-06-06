@@ -211,7 +211,7 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE,
   data <- read.table(paste0(dir.in, "/", bayesallfile), header=FALSE, 
                      skip=patt + 1, colClasses=col.c, comment.char="", 
                      col.names=col.n)
-  parlast <- length(h) - 1 - (if (heating == TRUE) nchain + 1)
+  parlast <- length(h) - 2 - if (heating == TRUE) nchain else 0
   repl <- length(unique(data$Replicate))
   if(repl > 1) {
     message(paste("Detected", repl, "replicates"))
