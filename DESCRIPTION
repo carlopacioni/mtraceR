@@ -10,7 +10,7 @@ Author: as.person(c(
     "Carlo Pacioni <C.Pacioni@Murdoch.edu.au> [aut, cre]",
     "Anders Goncalves Da Silva <anders.g.dasilva@monash.edu> [aut]"
     ))
-BugReports: https://github.org/carlopacioni/mtraceR/issues
+BugReports: https://github.com/carlopacioni/mtraceR/issues
 License: GPL-3
 Depends: R (>= 3.1.0)
 Imports: 
