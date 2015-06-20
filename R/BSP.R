@@ -45,6 +45,7 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
     ggplot(, aesDT(...))
   }
   ##############################################
+  
   plot.locus <- function(i, dpar, par){
     dlocus <- dpar[J(i), ]
     neg <- dlocus[, which(Standard.deviation < 0)[1]]
@@ -63,52 +64,86 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
     return(p)
   }
   
-  plot.loci <- function(par, data, loci){
+  plot.param <- function(par, data, loci){
     dpar <- data[J(par), ]
     setkey(dpar, Locus)
     p.loci <- lapply(loci, plot.locus, dpar, par)
-    plots <- do.call(arrangeGrob,  p.loci)
-    return(plots)
+    return(p.loci)
+  }
+  
+  make.Grob <- function(lp.par){
+    p.par <- do.call(arrangeGrob,  lp.par)
+    return(p.par)
+  }
+  
+  plot2disk <- function(i, plots, params, dir.out) {
+    ggsave(plots[[i]], dpi=600, 
+           filename=paste0(dir.out, "/", "Parameter", params[i], ".pdf"))
+    plot <- plots[[i]]
+    save(plot, file=paste0(dir.out, "/", "Parameter", params[i], ".rda"))
   }
   #----------------------------------------------------------------------------#
   
 
-if(is.null(skylinefile) & is.null(dir.in)) {
-  message("Please, select the skylinefile to import")
-  full.path <- file.choose()
-  skylinefile <- basename(full.path)
-  dir.in <- dirname(full.path)
-} else {
-  if(is.null(skylinefile)) skylinefile <- "skylinefile"
-  if(is.null(dir.in)) 
-    dir.in <- choose.dir("Select the folder where skylinefile is")
+  if(is.null(skylinefile) & is.null(dir.in)) {
+    message("Please, select the skylinefile to import")
+    full.path <- file.choose()
+    skylinefile <- basename(full.path)
+    dir.in <- dirname(full.path)
+  } else {
+    if(is.null(skylinefile)) skylinefile <- "skylinefile"
+    if(is.null(dir.in)) 
+      dir.in <- choose.dir("Select the folder where skylinefile is")
+  }
+  
+  if(is.null(dir.out)) dir.out <- dir.in
+  
+  ################################################################
+  # This works only with multilocus data, probably because of the end of line issue
+  # d <- fread(paste0(dir.in, "/", "skylinefile"))
+  # h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
+  #        "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
+  #        "Autocorrelation-per-bin")
+  # setnames(d, h)
+  ################################################################
+  
+  rl <- readLines(paste0(dir.in, "/", "skylinefile"))
+  lstart <- grep(rl, pattern = "^1\t1\t")[1]
+  h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
+                 "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
+                 "Autocorrelation-per-bin")
+  d<-data.table((read.table(paste0(dir.in, "/", "skylinefile"), 
+                 skip=lstart - 1, header = F, col.names = h)))
+  nloci <- length(d[, unique(Locus)])
+  overall <- nloci
+  if(nloci > 1) nloci <- nloci - 1
+  setkey(d, Parameter.number)
+  d[, Standard.error := Standard.deviation / sqrt(Counts.per.bin)]
+  d[, Upper := Parameter.value + 1.96 * Standard.error]
+  d[, Lower := Parameter.value - 1.96 * Standard.error]  
+  if(save2disk == TRUE) write.csv(d, paste0(dir.out, "/", "sky.data.csv"),  
+                                  row.names=FALSE)
+  
+  if(all.loci == TRUE) {
+    lplots.eachLocus.byParams <- lapply(params, plot.param, data=d, loci=1:nloci)
+    lplots.byParams.Grob <- lapply(lplots.eachLocus.byParams, make.Grob)
+    if(save2disk == TRUE) {
+      i <- 1:length(params)
+      lapply(i, plot2disk, plots=lplots.byParams.Grob, params, dir.out)
+    }
+    
+      
+  }
+  
+  if(overall == TRUE) {
+    lplots.overall.byParams <- lapply(params, plot.param, data=d, loci=overall)
+    if(save2disk == TRUE) {
+      i <- 1:length(params)
+      lapply(i, plot2disk, plots=lplots.overall.byParams, params, dir.out)
+    }
+  }
+  return(list(sky.data=d,
+              if(all.loci == TRUE) lplots.byParams.Grob,
+              if(overall == TRUE) lplots.overall.byParams))
+
 }
-
-if(is.null(dir.out)) dir.out <- dir.in
-
-################################################################
-# This works only with multilocus data, probably because of the end of line issue
-# d <- fread(paste0(dir.in, "/", "skylinefile"))
-# h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
-#        "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
-#        "Autocorrelation-per-bin")
-# setnames(d, h)
-################################################################
-
-rl <- readLines(paste0(dir.in, "/", "skylinefile"))
-lstart <- grep(rl, pattern = "^1\t1\t")[1]
-h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
-               "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
-               "Autocorrelation-per-bin")
-d<-data.table((read.table(paste0(dir.in, "/", "skylinefile"), 
-               skip=lstart - 1, header = F, col.names = h)))
-nloci <- length(d[, unique(Locus)])
-if(nloci > 1) nloci <- nloci - 1
-setkey(d, Parameter.number)
-d[, Standard.error := Standard.deviation / sqrt(Counts.per.bin)]
-d[, Upper := Parameter.value + 1.96 * Standard.error]
-d[, Lower := Parameter.value - 1.96 * Standard.error]  
-
-lplots.byparams <- lapply(params, plot.loci, data=d, loci=1:nloci)
-
-
