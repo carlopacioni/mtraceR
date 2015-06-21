@@ -123,7 +123,7 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
     if(save2disk == TRUE) {
       i <- 1:length(params)
       lapply(i, plot2disk, plots=lplots.byParams.Grob, params, 
-             suffix=".byParams", dir.out)
+             suffix=".eachLocus", dir.out)
     } 
   }
   
