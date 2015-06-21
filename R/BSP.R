@@ -108,7 +108,7 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
   d<-data.table((read.table(paste0(dir.in, "/", "skylinefile"), 
                  skip=lstart - 1, header = F, col.names = h)))
   nloci <- length(d[, unique(Locus)])
-  overall <- nloci
+  all <- nloci
   if(nloci > 1) nloci <- nloci - 1
   setkey(d, Parameter.number)
   d[, Standard.error := Standard.deviation / sqrt(Counts.per.bin)]
@@ -128,7 +128,7 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
   }
   
   if(overall == TRUE) {
-    lplots.overall.byParams <- lapply(params, plot.param, data=d, loci=overall)
+    lplots.overall.byParams <- lapply(params, plot.param, data=d, loci=all)
     lplots.overall.byParams <- lapply(lplots.overall.byParams, reduce)
     if(save2disk == TRUE) {
       i <- 1:length(params)
