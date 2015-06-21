@@ -1,4 +1,14 @@
-
+#' Generate Bayesian skyline plots
+#' 
+#' \code{BSP} generates Bayesian skyline plots for each analysed locus (when 
+#'   relevant) and the sum over all loci. Plots are returned as ggplot objects 
+#'   and, when \code{save2disk==TRUE}, pdf files. 
+#'   
+#' \code{BSP} will also return the data use to generate the BSPs as a data.table
+#'   object and, when \code{save2disk==TRUE}, a csv file. These data are a 'clean
+#'   up' version of these contained in the skyline file along with the standard 
+#'   error and upper and lower limits.
+#'   
 #' @param dir.in The local folder containing skylinefile files (default: NULL)
 #' @param skylinefile The name of the skylinefile (default: NULL)
 #' @param dir.out The local path to store the results. If NULL (default) then
@@ -8,8 +18,8 @@
 #' @param overall Whether the parameter should be plotted for the sum over all 
 #'   loci (when \code{nloci>1})
 #' @param save2disk Whether to save results to disk (default: TRUE)
-#' @return See details for 
-#'   additional outputs when \code{save2dis=TRUE}.
+#' @return A list where the first element is a data.table with skyline data and 
+#'   the others are the BSPs.
 #' @import data.table
 #' @import ggplot2
 #' @import gridExtra
