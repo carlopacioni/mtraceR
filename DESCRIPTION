@@ -8,7 +8,7 @@ Version: 0.0.900
 Date: 2015-05-20
 Author: as.person(c(
     "Carlo Pacioni <C.Pacioni@Murdoch.edu.au> [aut, cre]",
-    "Anders Goncalves Da Silva <anders.g.dasilva@monash.edu> [aut]"
+    "Anders Goncalves Da Silva <andersgs@gmail.com> [aut]"
     ))
 BugReports: https://github.com/carlopacioni/mtraceR/issues
 License: GPL-3
