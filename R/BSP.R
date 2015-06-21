@@ -60,7 +60,8 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
                   geom_ribbon(data=dlocus[1:sel.min, ],  alpha=0.2,
                                 aes(x=Age, ymax=Upper, ymin=Lower)) +
                   theme_classic() + 
-                  ylab(paste("Parameter", par)) + xlab("Time")]
+                  ylab(paste("Parameter", par)) + xlab("Time") +
+                  ggtitle(paste("Locus", i))]
     return(p)
   }
   
@@ -76,11 +77,16 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
     return(p.par)
   }
   
-  plot2disk <- function(i, plots, params, dir.out) {
+  reduce <- function(lp.par){
+    p <- lp.par[[1]]
+    return(p)
+  }
+  
+  plot2disk <- function(i, plots, params, suffix, dir.out) {
     ggsave(plots[[i]], dpi=600, 
-           filename=paste0(dir.out, "/", "Parameter", params[i], ".pdf"))
+           filename=paste0(dir.out, "/", "Parameter", params[i], suffix, ".pdf"))
     plot <- plots[[i]]
-    save(plot, file=paste0(dir.out, "/", "Parameter", params[i], ".rda"))
+    save(plot, file=paste0(dir.out, "/", "Parameter", params[i], suffix, ".rda"))
   }
   #----------------------------------------------------------------------------#
   
@@ -129,17 +135,18 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
     lplots.byParams.Grob <- lapply(lplots.eachLocus.byParams, make.Grob)
     if(save2disk == TRUE) {
       i <- 1:length(params)
-      lapply(i, plot2disk, plots=lplots.byParams.Grob, params, dir.out)
-    }
-    
-      
+      lapply(i, plot2disk, plots=lplots.byParams.Grob, params, 
+             suffix=".byParams", dir.out)
+    } 
   }
   
   if(overall == TRUE) {
     lplots.overall.byParams <- lapply(params, plot.param, data=d, loci=overall)
+    lplots.overall.byParams <- lapply(lplots.overall.byParams, reduce)
     if(save2disk == TRUE) {
       i <- 1:length(params)
-      lapply(i, plot2disk, plots=lplots.overall.byParams, params, dir.out)
+      lapply(i, plot2disk, plots=lplots.overall.byParams, params, 
+             suffix=".overall", dir.out)
     }
   }
   return(list(sky.data=d,
