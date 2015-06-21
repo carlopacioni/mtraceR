@@ -1,16 +1,3 @@
-sky.path<-"C:/Users/30373314/Documents/Woylie/Genetics/DNA analysis/allele scores & analysis/Historical samples Helen/ReAnalysis 2013/Migrate/NoDates/pan//Skyline//Cipres_Data"
-sky.path<-"C:/Users/30373314/Documents/Woylie/Genetics/DNA analysis/mtDNA/Hist/ReAnalysis 2013/MIGRATE/FourPopsSt/skyline/Cipres_Data"
-library(data.table)
-library(ggplot2)
-library(gridExtra)
-
-dir.in=sky.path
-skylinefile=NULL
-dir.out=NULL
-all.loci=TRUE
-overall=TRUE
-params=1
-save2disk=TRUE
 
 #' @param dir.in The local folder containing skylinefile files (default: NULL)
 #' @param skylinefile The name of the skylinefile (default: NULL)
@@ -26,7 +13,7 @@ save2disk=TRUE
 #' @import data.table
 #' @import ggplot2
 #' @import gridExtra
-#' 
+#' @export
 BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,  
                 all.loci=TRUE, overall=TRUE, params=1, save2disk=TRUE){
 
