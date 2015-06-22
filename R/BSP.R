@@ -151,3 +151,76 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL,
               if(overall == TRUE) lplots.overall.byParams))
 
 }
+
+#' Sum parameter values from different parameters
+#' 
+#' \code{meta.BSP} takes as input data equal to the first element of the output
+#'   from \code{BSP} and combine (i.e. sum) the values of the parameters passed 
+#'   with the argument \code{params}. This could be useful, for example, when 
+#'   the analysis include populations from one meta-population system and the user
+#'   wants to calculate the meta-population (i.e. the total) population size.
+#'   
+#' When multiple loci are used in the analysis, the argument \code{locus} can 
+#'   be used to indicate which locus should be used. If \code{"locus=max"},
+#'   then the largest locus number is used. 
+#'   
+#'   
+#' @param dir.out The local path to store the results. If NULL (default) then
+#'  \code{dir.out=wd()}
+#' @param params A vector of parameter numbers to be combined and plotted
+#' @param locus The locus to be considered
+#' @param save2disk Whether to save results to disk (default: TRUE)
+#' @return A list with the combined data (as data.table) and a BSP.
+#' @import data.table
+#' @import ggplot2
+#' @export
+   
+meta.BSP <- function(data=NULL, dir.out=NULL, params=NULL, locus="max", 
+                     save2disk=TRUE) {
+  #----------------------------------------------------------------------------#
+  # Helper funstions
+  #----------------------------------------------------------------------------#
+  equal.length <- function(par, dlocus, sel.min) {
+    dpar <- dlocus[J(par), ]
+    dpar.eq <- dpar[1:sel.min, ]
+  }
+  if(is.null(data)) stop("Error: no data provided!")
+  if(is.null(params)) stop("Please, provide parameter number(s)")
+  if(is.null(locus)) stop("Please, indicate locus")
+  if(is.null(dir.out)) dir.out <- wd()
+  h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
+         "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
+         "Autocorrelation-per-bin", "Standard.error", "Upper", "Lower")
+  if(!identical(names(data), make.names(h))) stop("Error, data headings are not correct")
+  data <- data.table(data)
+  if(locus == "max") locus <- data[, max(unique(Locus))]
+  setkey(data, Locus)
+  dlocus <- data[J(locus), ]
+  neg <- dlocus[, which(Standard.deviation < 0)[1], by="Parameter.number"]
+  infin <- dlocus[, which(Standard.deviation == Inf)[1], by="Parameter.number"]
+  sel.min <- suppressWarnings(min(neg[, V1], infin[, V1], na.rm = TRUE))
+  bins <- dlocus[, length(Bin), by="Parameter.number"]
+  if(sel.min == Inf) {sel.min <- min(bins[, V1])
+  } else{
+    sel.min <- sel.min - 1
+  }
+  setkey(dlocus, Parameter.number)
+  ldpars.eq <- lapply(params, equal.length, dlocus, sel.min)
+  dpars.eq <- rbindlist(ldpars.eq)
+  meta <- dpars.eq[, lapply(.SD, sum), 
+                 .SDcol=c("Parameter.value", "Upper", "Lower"), 
+                 by="Age"]
+  p <- meta[, ggplotDT(x=Age, y=Parameter.value) + 
+                geom_line() +
+                geom_ribbon(data=meta,  alpha=0.2,
+                            aes(x=Age, ymax=Upper, ymin=Lower)) +
+                theme_classic() + 
+                ylab("") + xlab("Time")]
+  if(save2disk == TRUE) {
+    pars <- paste0(params, collapse="-")
+    write.csv(meta, paste0(dir.out, "/", "meta.", pars, ".csv"), row.names=FALSE)
+    ggsave(p, dpi=600, filename=paste0(dir.out, "/", "meta.", pars, ".pdf"))
+    save(p, file=paste0(dir.out, "/", "meta.", pars, ".rda"))
+  }
+  return(list(data=meta, plot=p))
+}
