@@ -14,6 +14,12 @@ be installed from within R with
 install.packages("devtools")
 ```
 
+## Notes
+This is a development version. Functions arguments and their implementation may 
+change with no warnings.
+Limited testing has been conducted with migrate-n outputs from sequence and 
+microsatellite data only.
+
 ## Documentation
 Pending
 
