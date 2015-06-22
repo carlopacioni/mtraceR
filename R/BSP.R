@@ -1,3 +1,34 @@
+#------------------------------------------------------------------------------#
+# Helper funstions
+#------------------------------------------------------------------------------#
+
+#' Helper function to plot ggplot directly from data.table.
+#' 
+#' See \url{from http://r.789695.n4.nabble.com/ggplot2-and-data-table-td3743483.html}
+#'   for details
+#'   
+#' Credit to Timothée Carayol
+#' @param ... Arguments to be passed (explicitly) to ggplot aesthetic
+#' @export
+aesDT <- function(...) {
+  aes <- structure(list(...),  class = "uneval")
+}
+
+#' Helper function to plot ggplot directly from data.table.
+#' 
+#' See \url{from http://r.789695.n4.nabble.com/ggplot2-and-data-table-td3743483.html}
+#'   for details
+#'   
+#' Credit to Timothée Carayol
+#' @param ... ggplot elements
+#' @export
+ggplotDT <- function(...) {
+  ggplot(, aesDT(...))
+}
+
+#------------------------------------------------------------------------------#
+
+
 #' Generate Bayesian skyline plots
 #' 
 #' \code{BSP} generates Bayesian skyline plots for each analysed locus (when 
