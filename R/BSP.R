@@ -37,10 +37,10 @@ ggplotDT <- function(...) {
 #'   
 #' \code{BSP} will also return the data used to generate the BSPs as a data.table
 #'   object and, when \code{save2disk==TRUE}, a csv file. These data are a 'clean
-#'   up' version of these contained in the skyline file along with the standard 
-#'   error and upper and lower limits. The column "Time" is the rescaled "Age" 
-#'   (from migrate output) when \code{gen} and \code{mu} are provided. The column
-#'   "Ne" is the effective population size, calculated as theta/(x * mu). 
+#'   up' version of these contained in the skyline file along with the upper and 
+#'   lower limits. The column "Time" is the rescaled "Age" (from migrate output) 
+#'   when \code{gen} and \code{mu} are provided. The column "Ne" is the 
+#'   effective population size, calculated as theta/(x * mu). 
 #'   
 #' @param dir.in The local folder containing skylinefile files (default: NULL)
 #' @param skylinefile The name of the skylinefile (default: NULL)
@@ -156,9 +156,8 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL, all.loci=TRUE,
   all <- nloci
   if(nloci > 1) nloci <- nloci - 1
   setkey(d, Parameter.number)
-  d[, Standard.error := Standard.deviation / sqrt(Counts.per.bin)]
-  d[, Upper := Parameter.value + 1.96 * Standard.error]
-  d[, Lower := Parameter.value - 1.96 * Standard.error]  
+  d[, Upper := Parameter.value + 1.96 * Standard.deviation]
+  d[, Lower := Parameter.value - 1.96 * Standard.deviation]  
   d[, Time := Age * gen / mu]
   if(save2disk == TRUE) write.csv(d, paste0(dir.out, "/", "sky.data.csv"),  
                                   row.names=FALSE)
@@ -226,7 +225,7 @@ meta.BSP <- function(data=NULL, dir.out=NULL, params=NULL, locus="max",
   if(is.null(dir.out)) dir.out <- wd()
   h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
          "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
-         "Autocorrelation-per-bin", "Standard.error", "Upper", "Lower", "Time")
+         "Autocorrelation-per-bin", "Upper", "Lower", "Time")
   if(!identical(names(data), make.names(h))) stop("Error, data headings are not correct")
   data <- data.table(data)
   if(locus == "max") locus <- data[, max(unique(Locus))]
