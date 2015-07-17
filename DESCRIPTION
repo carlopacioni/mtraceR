@@ -6,7 +6,7 @@ Description: mtraceR can be used to visualise traces of MCMC chains, calculate
     (and plots), Bayes factor, and generate skyline plots.
 Version: 0.0.900
 Date: 2015-05-20
-Author: as.person(c(
+Authors@R: as.person(c(
     "Carlo Pacioni <C.Pacioni@Murdoch.edu.au> [aut, cre]",
     "Anders Goncalves Da Silva <andersgs@gmail.com> [aut]"
     ))
@@ -15,7 +15,9 @@ License: GPL-3
 Depends: R (>= 3.1.0)
 Imports: 
   coda,
-  data.table
+  data.table,
+  ggplot2,
+  gridExtra
 Suggests:
     knitr,
     rmarkdown,
