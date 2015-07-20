@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------#
 # Package info
 #------------------------------------------------------------------------------#
-#' mtraceR: an R package to analyse migration-n output
+#' mtraceR: an R package to analyse migrate-n output
 #'
 #' \code{mtraceR} can be used to visualise trace of MCMC chains, calculate 
 #' Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic (and 

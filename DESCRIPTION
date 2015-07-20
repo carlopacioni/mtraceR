@@ -1,6 +1,6 @@
 Package: mtraceR
 Type: Package
-Title: an R package to analyse migration-n output
+Title: an R package to analyse migrate-n output
 Description: mtraceR can be used to visualise traces of MCMC chains, calculate 
     Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic 
     (and plots), Bayes factor, and generate skyline plots.
