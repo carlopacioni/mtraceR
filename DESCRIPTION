@@ -1,10 +1,10 @@
 Package: mtraceR
 Type: Package
 Title: an R package to analyse migrate-n output
-Description: mtraceR can be used to visualise traces of MCMC chains, calculate 
-    Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic 
+Description: mtraceR can be used to visualise traces of MCMC chains, calculate
+    Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic
     (and plots), Bayes factor, and generate skyline plots.
-Version: 0.0.900
+Version: 0.0.1.900
 Date: 2015-05-20
 Authors@R: as.person(c(
     "Carlo Pacioni <C.Pacioni@Murdoch.edu.au> [aut, cre]",
@@ -12,12 +12,13 @@ Authors@R: as.person(c(
     ))
 BugReports: https://github.com/carlopacioni/mtraceR/issues
 License: GPL-3
-Depends: R (>= 3.1.0)
-Imports: 
-  coda,
-  data.table,
-  ggplot2,
-  gridExtra
+Depends:
+    R (>= 3.1.0)
+Imports:
+    coda,
+    data.table,
+    ggplot2,
+    gridExtra
 Suggests:
     knitr,
     rmarkdown,
@@ -25,3 +26,4 @@ Suggests:
     roxygen2,
     testthat
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

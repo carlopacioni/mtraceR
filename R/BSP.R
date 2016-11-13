@@ -145,12 +145,12 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL, all.loci=TRUE,
   # setnames(d, h)
   ################################################################
   
-  rl <- readLines(paste0(dir.in, "/", "skylinefile"))
+  rl <- readLines(paste0(dir.in, "/", skylinefile))
   lstart <- grep(rl, pattern = "^1\t1\t")[1]
   h <- c("Locus", "Parameter-number", "Bin", "Age", "Parameter-value", 
                  "Parameter-Frequency", "Standard-deviation", "Counts-per-bin", 
                  "Autocorrelation-per-bin")
-  d<-data.table((read.table(paste0(dir.in, "/", "skylinefile"), 
+  d<-data.table((read.table(paste0(dir.in, "/", skylinefile), 
                  skip=lstart - 1, header = F, col.names = h)))
   nloci <- length(d[, unique(Locus)])
   all <- nloci
