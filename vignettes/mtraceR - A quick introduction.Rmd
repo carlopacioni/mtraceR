@@ -1,0 +1,140 @@
+---
+title: "mtraceR - A quick introduction"
+author: "Carlo Pacioni"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    rmarkdown::html_vignette: 
+           fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# Introduction
+
+```mtraceR``` is an R package that aims to help in the diagnostics of Bayes MCMC analysis run with Migrate-n (Beerli 2006). It can be used to visualise traces of MCMC chains, calculate
+    Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic
+    (and plots). It also includes functions to  calculate Bayes factor to compare models and generate (optionally multiple) skyline plots that can be used for publication.
+
+Below I outline a possible work flow with examples for the functions that are currently implemented. Example files are copied on your machine when  `mtraceR` is installed, so you should be able to replicate all the examples presented here as well as the ones in the help files (which you access with ?*function_name*) where *function_name* is the name of the function you want information for (e.g. `?mtrace`).  
+
+
+# Installation
+```mtraceR``` is currently available from github. To install it, you have to have ```devtools``` installed and loaded.
+
+```{r, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("carlopacioni/mtraceR")
+```
+
+If you are using Windows, if you haven't done it already, you have to download the Rtools executable file from CRAN webpage and run it (with R or RStudio - depending how you use R - shut down). Re-booting the machine to ensure that RTools is in the PATH is probably a good idea. Once this is done you can run the code above to install `devtools` from within R.
+
+
+**NOTE (August 2016)** At the time of writing, the current official release of `devtools` (1.12.0) has an issue with R 3.3.1 on windows, which results in the dependencies of the package not being installed. This problem is resolved in the dev version. If you have problems installing `mtraceR` try the following (from devtools manual for the function build\_github\_devtools):
+```{r, eval=FALSE}
+
+# Install devtools from CRAN if you haven't already
+install.packages("devtools")
+
+library(devtools)
+build_github_devtools()
+
+#### Restart R before continuing ####
+install.packages("./devtools.zip", repos=NULL)
+
+# Remove the package after installation
+unlink("./devtools.zip")
+
+library(devtools)
+install_github("carlopacioni/mtraceR")
+
+```
+
+# Citation
+If you use `mtraceR`, please cite:
+Pacioni C, Hunt H, Allentoft ME, et al. (2015) Genetic diversity loss in a biodiversity hotspot: ancient DNA quantifies genetic decline and former connectivity in a critically endangered marsupial. Molecular Ecology, 24, 5813-5828.  
+
+# ```mtrace```
+Let's assume you have run your analysis. Generally, the first thing you want to know is whether your run was long enough. The function `mtrace`, which is essentially a wrapper of the package `coda` (Plummer et al 2006) to be used for Migrate-n outputs, has this purpose. At the end of your run you will have a bunch of files, among which there is a *bayesallfile*. If you don't have it, this means that you didn't select the option in Migrate-n menu. Note that *bayesallfile* is the default name, but you may have changed it (in the example below is *bayesallfile_ms_3popsSt.gz*). To use this function, you have to provide a number of information: whether you used heating (`heating`), the number of chains you used (`nchain`), the proportion of your MCMC that you want to discard as burnin (`burn.in`), the directory where your *bayesallfile* is (`dir.in`),  whether you want to save the results to disk (`save2disk`) and where to save the result (`dir.out`), which is, obviously, only meaningful if `save2disk=TRUE`. All these arguments should be self-explanatory, so I'll give them for granted. You won't get (a PDF with) the trace plots if you don't use `save2disk=TRUE`, so I recommend that you save the output to disk. The arguments `trim` and `thin` are a bit more criptic and probably worth a couple of words. If you use `trim=FALSE, thin=1`, `mtrace` wil lgenerate plots for all paramters in the bayesallfile for  all the recorded steps. This means that the analysis will take a bit longer and the size of the PDF will be larger (potentially substantially larger). If you use a value > 1  for the argument `thin`, you will be 'thinning' the recorded steps (in the example below by a factor of 10) and the PDF will be smaller and plots will be quicker to display. With `trim` you decide whether to 'trim' the parameter to only theta and M, which of course will make the PDF even smaller and most often than not, it is sufficient to have an idea whether the run was adequate. Here there is an example:
+
+```{r}
+library(mtraceR)
+# locate the example files
+data.path <- system.file("extdata", package="mtraceR")
+# run mtrace
+test_microsats <- mtrace(heating=TRUE, nchain=4, burn.in=0.4, dir.in=data.path, 
+                         dir.out = NULL, trim=TRUE, thin=10, save2disk=FALSE, 
+                         bayesallfile="bayesallfile_ms_3popsSt.gz")
+```
+Note that if you leave `dir.in` and  `bayesallfile` with their default values (i.e. `NULL`), an interactive window will pop up to manually select the *bayesallfile*. If you pass a path with `dir.in`, but not a name for `bayesallfile`, `mtrace` will assume that you used Migrate-n default name for *bayesallfile*. If you leave the default `dir.out=NULL`, but `save2disk=TRUE`, `mtrace` will save the results in the same folder where the *bayesallfile* is.
+
+`mtrace` will generate trace plots with a smooth for each locus. There are plenty of documents online that explain how a good trace should look like. One good place where to start if you are lost is the **BEAST book**. They will look something like the figure below.  
+
+
+```{r, echo=FALSE, out.width=450, fig.cap="__Figure 1.__ Overimposed traces of seven replicates (one colour for each replicate) of the analysis of a microsatellite locus and density of posterior distribution"}
+knitr::include_graphics("Bad_trace2.tif")
+```
+  
+  
+
+Note that because we have to keep the size of the files that are copied across when `mtraceR` is installed to minimum, the example run was very short. Note how there is no convergence (the lines go in differenct directions) and the mixing is very poor (the famous hairy catepillar is not there). Because of the poor mixing, the smooths also are not very useful. Actually, they probably confound the situation. We will see later that in a non-so-extremely-short run, things should be clearer. For now, let's continue with this example.  
+
+When there is more than one replicate, `mtrace` automatically calculates the Gelman and Rubin's convergence diagnostic and saves a plot of this statistic in a separate PDF. Convergence is considered achieved when the upper limit of the statistic is close to 1-1.1. In the example, the plot confirms our impression that there is no convergence (Figure 2). 
+
+```{r, echo=FALSE, out.width=500, fig.cap="__Figure 2.__ Gelman's statistics for locus 2 of the traces in Figure 1. "}
+knitr::include_graphics("Bad_Gelm_Plot.tif")
+
+```
+  
+  
+
+The function returns a list with three elements. The last is a list with the Gelman's statistic for each locus, in case you are curios to know the exact values of the point estimate and the upper limit.
+
+```{r}
+test_microsats[[3]][[2]]
+
+```
+
+To be precise, the Gelman and Rubin's convergence diagnostic was meant to be used to compare chains that had very divergent starting values. This will be rarely the case with Migrate-n because normally it selects a random starting point, but I think that it is safe to say that this statistic can be trusted if doesn't indicate convergence.    
+
+
+The function `mtrace` also estimate the Estimated Sample Size (ESS). My experience is that the ESS reported by Migrate-n (with a single locus analysis) are, for the same MCMC, ~10x the ones reported by Tracer (Rambaut and Drummond 2007). The ESS calculate with the package `coda`, which is used behind the scene by  `mtrace`, are close to Tracer, so I believe that it is probably safe to assume that you should aim for ESS>200 as recommended by Tracer authors. That being said, I am normally happy when I have >500. The first element of the list returned byt he function is a table with the ESS for each locus:
+```{r}
+# for brevity, we subset the table
+test_microsats[[1]][, 1:4]
+
+```
+
+The second element is a summary across all loci: 
+```{r}
+# for brevity, we subset the table
+test_microsats[[2]][, c(3, 9)]
+
+```
+
+These data are also saved to disk as .csv files when `save2disk=TRUE`.   
+
+Hopefully, the traces of your own run will look more similar to Figure 3.  
+
+```{r, echo=FALSE, out.width=450, fig.cap="__Figure 3.__ Overimposed traces (one colour for each replicate) of the analysis of a microsatellite locus and density of posterior distribution"}
+knitr::include_graphics("Good_trace2.tif")
+```
+
+You can see that in Figure 3 the mixing is much better. Each replicate is plotted with a different colour and the smooth clearly indicate that convergence was achieved (note how the horizontal lines - the smooths - are flat and close to each other).  
+
+Consistenly, the German's statistic reports a much lower value:
+
+```{r, echo=FALSE, out.width=500, fig.cap="__Figure 4.__ Gelman's statistics for locus 2 of the traces in Figure 3.  "}
+knitr::include_graphics("Good_Gelm_Plot.tif")
+
+```
+  
+  
+# References
+Beerli, P. (2006). Comparison of bayesian and maximum-likelihood inference of population genetic parameters. Bioinformatics 22, 341-345.  
+
+Plummer, M., Best, N., Cowles K. and Vines K. (2006). CODA: Convergence Diagnosis and Output Analysis for MCMC, R News, vol 6, 7-11  
+
+Rambaut A., Drummond A.J. (2007) TRACER. http://beast.bio.ed.ac.uk/Tracer 
+
