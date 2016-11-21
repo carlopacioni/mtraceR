@@ -320,7 +320,7 @@ BF <- function(lmLs=NULL) {
   if(!is.numeric(lmLs)) stop("Please, pass a numeric vector of log 
                              likelihood with the argument lmLs")
   ref.mod <- max(lmLs)
-  LBF <- lmLs - ref.mod
+  LBF <- 2 * (lmLs - ref.mod)
   BF <- exp(LBF )
   mod.prob <- round(BF / sum(BF), digits=3)
   mod.rank <- rank( - LBF)
