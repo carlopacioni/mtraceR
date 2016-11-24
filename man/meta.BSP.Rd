@@ -24,13 +24,14 @@ A list with the combined data (as data.table) and a BSP.
 }
 \description{
 \code{meta.BSP} takes as input data equal to the first element of the output
-  from \code{BSP} and combine (i.e. sum) the values of the parameters passed 
+  from \code{BSP} and combines (i.e. sum) the values of the parameters passed 
   with the argument \code{params}. This could be useful, for example, when 
-  the analysis include populations from one meta-population system and the user
-  wants to calculate the meta-population (i.e. the total) population size.
+  the analysis includes populations from a meta-population system and the user
+  wants to calculate the size of meta-population (i.e. the total).
   
 When multiple loci are used in the analysis, the argument \code{locus} can 
-  be used to indicate which locus should be used. If \code{"locus=max"},
-  then the largest locus number is used.
+  be used to indicate which locus should be used. If \code{locus="max"},
+  then the lastgest locus number is used (which corresponds to the sum over 
+  all loci for multi-locus analyses).
 }
 
