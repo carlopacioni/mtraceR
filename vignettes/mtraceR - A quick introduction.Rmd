@@ -12,11 +12,11 @@ vignette: >
 ---
 # Introduction
 
-```mtraceR``` is an R package that aims to help in the diagnostics of Bayes MCMC analysis run with Migrate-n (Beerli 2006). It can be used to visualise traces of MCMC chains, calculate
+```mtraceR``` is an R package that aims to help in the diagnostics of Bayes MCMC analysis run with Migrate-n (Beerli 2006). It can be used to visualise traces of MCMC runs, calculate
     Effective Sample Size (ESS), Gelman and Rubin's convergence diagnostic
     (and plots). It also includes functions to  calculate Bayes factor to compare models and generate (optionally multiple) skyline plots that can be used for publication.
 
-Below I outline a possible work flow with examples for the functions that are currently implemented. Example files are copied on your machine when  `mtraceR` is installed, so you should be able to replicate all the examples presented here as well as the ones in the help files (which you access with ?*function_name*) where *function_name* is the name of the function you want information for (e.g. `?mtrace`).  
+Below I outline a possible work flow with examples for the functions that are currently implemented. Example files are copied on your machine when  `mtraceR` is installed, so you should be able to run the code presented here as well as the ones in the help files (which you access with ?*function_name*) where *function_name* is the name of the function you want information for (e.g. `?mtrace`).  
 
 
 # Installation
@@ -28,10 +28,10 @@ library(devtools)
 install_github("carlopacioni/mtraceR")
 ```
 
-If you are using Windows, if you haven't done it already, you have to download the Rtools executable file from CRAN webpage and run it (with R or RStudio - depending how you use R - shut down). Re-booting the machine to ensure that RTools is in the PATH is probably a good idea. Once this is done you can run the code above to install `devtools` from within R.
+If you are using Windows and you haven't done it already, you have to download the Rtools executable file from CRAN webpage and run it (with R shut down). Re-booting the machine to ensure that RTools is in the PATH is probably a good idea. Once this is done you can run the code above to install `devtools` and `mtraceR` from within R.
 
 
-**NOTE (August 2016)** At the time of writing, the current official release of `devtools` (1.12.0) has an issue with R 3.3.1 on windows, which results in the dependencies of the package not being installed. This problem is resolved in the dev version. If you have problems installing `mtraceR` try the following (from devtools manual for the function build\_github\_devtools):
+**NOTE (August 2016)** At the time of writing, the current official release of `devtools` (1.12.0) has an issue with R 3.3.1 on windows, which results in the dependencies of the package not being installed. This problem is resolved in the dev version. If you have problems installing `mtraceR`, with R complaining about missing packages, try the following (from devtools manual for the function build\_github\_devtools):
 ```{r, eval=FALSE}
 
 # Install devtools from CRAN if you haven't already
@@ -55,7 +55,7 @@ install_github("carlopacioni/mtraceR")
 If you use `mtraceR`, please cite:
 Pacioni C, Hunt H, Allentoft ME, et al. (2015) Genetic diversity loss in a biodiversity hotspot: ancient DNA quantifies genetic decline and former connectivity in a critically endangered marsupial. Molecular Ecology, 24, 5813-5828.  
 
-# ```mtrace```
+## ```mtrace```
 Let's assume you have run your analysis. Generally, the first thing you want to know is whether your run was long enough. The function `mtrace`, which is essentially a wrapper of the package `coda` (Plummer et al 2006) to be used for Migrate-n outputs, has this purpose. At the end of your run you will have a bunch of files, among which there is a *bayesallfile*. If you don't have it, this means that you didn't select the option in Migrate-n menu. Note that *bayesallfile* is the default name, but you may have changed it (in the example below is *bayesallfile_ms_3popsSt.gz*). To use this function, you have to provide a number of information: whether you used heating (`heating`), the number of chains you used (`nchain`), the proportion of your MCMC that you want to discard as burnin (`burn.in`), the directory where your *bayesallfile* is (`dir.in`),  whether you want to save the results to disk (`save2disk`) and where to save the result (`dir.out`), which is, obviously, only meaningful if `save2disk=TRUE`. All these arguments should be self-explanatory, so I'll give them for granted. You won't get (a PDF with) the trace plots if you don't use `save2disk=TRUE`, so I recommend that you save the output to disk. The arguments `trim` and `thin` are a bit more cryptic and probably worth a couple of words. If you use `trim=FALSE, thin=1`, `mtrace` will generate plots for all parameters in the bayesallfile for  all the recorded steps. This means that the analysis will take a bit longer and the size of the PDF will be larger (potentially substantially larger). If you use a value > 1  for the argument `thin`, you will be 'thinning' the recorded steps (in the example below by a factor of 10) and the PDF will be smaller and plots will be quicker to display. With `trim` you decide whether to 'trim' the parameter to only theta and M, which of course will make the PDF even smaller and most often than not, it is sufficient to have an idea whether the run was adequate. Here there is an example:
 
 ```{r}
@@ -69,7 +69,7 @@ test_microsats <- mtrace(heating=TRUE, nchain=4, burn.in=0.4, dir.in=data.path,
 ```
 Note that if you leave `dir.in` and  `bayesallfile` with their default values (i.e. `NULL`), an interactive window will pop up to manually select the *bayesallfile*. If you pass a path with `dir.in`, but not a name for `bayesallfile`, `mtrace` will assume that you used Migrate-n default name for *bayesallfile*. If you leave the default `dir.out=NULL`, but `save2disk=TRUE`, `mtrace` will save the results in the same folder where the *bayesallfile* is.
 
-`mtrace` will generate trace plots with a smooth for each locus. There are plenty of documents online that explain how a good trace should look like. One good place where to start if you are lost is the **BEAST book**. They will look something like the figure below.  
+`mtrace` will generate trace plots with a smooth for each locus. There are plenty of documents online that explain how a good trace should look like. One good place where to start if you are lost is Lemey et al (2009) and Drummond and Bouckaert (2015). An example of a 'very bad' plot is the figure below.  
 
 
 ```{r, echo=FALSE, out.width=450, fig.cap="__Figure 1.__ Overimposed traces of seven replicates (one colour for each replicate) of the analysis of a microsatellite locus and density of posterior distribution"}
@@ -78,7 +78,7 @@ knitr::include_graphics("Bad_trace2.tif")
   
   
 
-Note that because we have to keep the size of the files that are copied across when `mtraceR` is installed to minimum, the example run was very short. Note how there is no convergence (the lines go in different directions) and the mixing is very poor (the famous hairy caterpillar is not there). Because of the poor mixing, the smooths also are not very useful. Actually, they probably confound the situation. We will see later that in a non-so-extremely-short run, things should be clearer. For now, let's continue with this example.  
+Because we have to keep the size of the files that are copied across when `mtraceR` is installed to minimum, the example run was very short. Note how there is no convergence (the lines go in different directions) and the mixing is very poor (the famous hairy caterpillar is not there). The density plot is bimodal, which is something that you definitely don't want to have! Because of the poor mixing, the smooths also are not very useful. Actually, they probably confound the situation. We will see later that in a non-so-extremely-short run, things should be clearer. For now, let's continue with this example.  
 
 When there is more than one replicate, `mtrace` automatically calculates the Gelman and Rubin's convergence diagnostic and saves a plot of this statistic in a separate PDF. Convergence is considered achieved when the upper limit of the statistic is close to 1-1.1. In the example, the plot confirms our impression that there is no convergence (Figure 2). 
 
@@ -96,10 +96,10 @@ test_microsats[[3]][[2]]
 
 ```
 
-To be precise, the Gelman and Rubin's convergence diagnostic was meant to be used to compare chains that had very divergent starting values. This will be rarely the case with Migrate-n because normally it selects a random starting point, but I think that it is safe to say that this statistic can be trusted if doesn't indicate convergence.    
+To be precise, the Gelman and Rubin's convergence diagnostic was meant to be used to compare chains that had very divergent starting values. This will be rarely the case with Migrate-n, but I think that it is safe to say that this statistic can be trusted if doesn't indicate convergence.    
 
 
-The function `mtrace` also estimate the Estimated Sample Size (ESS). My experience is that the ESS reported by Migrate-n (with a single locus analysis) are, for the same MCMC, ~10x the ones reported by Tracer (Rambaut and Drummond 2007). The ESS calculate with the package `coda`, which is used behind the scene by  `mtrace`, are close to Tracer, so I believe that it is probably safe to assume that you should aim for ESS>200 as recommended by Tracer authors. That being said, I am normally happy when I have >500. The first element of the list returned by the function is a table with the ESS for each locus:
+The function `mtrace` also estimate the Estimated Sample Size (ESS). My experience is that the ESS reported by Migrate-n (with a single locus analysis) are, for the same MCMC, ~10x the ones reported by Tracer (Rambaut and Drummond 2007). The ESS calculate with the package `coda`, which is used behind the scene by  `mtrace`, are close to Tracer, so I believe that it is probably safe to assume that you should aim for ESS>200 as recommended by Tracer's authors. That being said, I am normally happy when I have >500. Remember that relatively high ESS alone don't mean that the analysis is okay! The first element of the list returned by the function is a table with the ESS for each locus:
 ```{r}
 # for brevity, we subset the table
 test_microsats[[1]][, 1:4]
@@ -131,8 +131,8 @@ knitr::include_graphics("Good_Gelm_Plot.tif")
 ```
   
   
-# BF
-Once you have run your analyses, chances are that you have a few different models that you want to compare. The function `BF` calculates log Bayes factors (LBF) of all models compared against the model that has the highest log likelihood. The models are then ranked based on LBF (mod.rank) and the model probability (mod.prob) is calculated. All you have to do is to pass a numeric vector with log marginal likelihood values of the models. In the example below, we use the values that were used in the [tutorial](http://popgen.sc.fsu.edu/Migrate/Tutorials/Entries/2010/7/12_Day_of_longboarding.html) by Peter Beerli.  
+## `BF`
+Once you have run your analyses, chances are that you have a few different models that you want to compare. Beerli and Palczewski (2010) demonstrated the utility of such an approach and the function `BF` facilitate this by calculating the log Bayes factors (LBF) of all models compared against the model that has the highest log likelihood. The models are then ranked based on LBF (mod.rank) and the model probability (mod.prob) is calculated. All you have to do is to pass a numeric vector with log marginal likelihood values of the models. In the example below, we use the values that were used in the [tutorial](http://popgen.sc.fsu.edu/Migrate/Tutorials/Entries/2010/7/12_Day_of_longboarding.html) by Peter Beerli.  
 
 
 ```{r}
@@ -142,14 +142,14 @@ Once you have run your analyses, chances are that you have a few different model
     
 The results match the ones from the tutorial. The most supported model is the number 2, with a probability of 98.3%.  
   
-# BSP
-`BSP` generates Bayesian skyline plots for each analysed locus (when `all.loci=TRUE`) and the sum over all loci (when `overall=TRUE`), which is returned as ggplot objects and, when `save2disk==TRUE`, pdf files.
+## `BSP`
+`BSP` generates Bayesian skyline plots for each analysed locus (when `all.loci=TRUE`) and the sum over all loci (when `overall=TRUE`), which is returned as ggplot objects and, when `save2disk=TRUE`, pdf files.
 
-BSP will also return the data used to generate the BSPs as a `data.table` object and, when `save2disk==TRUE`, a csv file. These data are a 'clean up' version of these contained in the skyline file along with the upper and lower limits. The column "Time" is the rescaled "Age" (from migrate output) when `gen` and `mu` are provided. The column "Ne" is the effective population size, calculated as theta/(x * mu).
+BSP will also return the data used to generate the BSPs as a `data.table` object and, when `save2disk=TRUE`, a csv file. These data are a 'clean up' version of these contained in the skyline file along with the upper and lower limits. The column "Time" is the rescaled "Age" (from migrate output) when `gen` and `mu` are provided. The column "Ne" is the effective population size, calculated as theta/(x * mu).
 
 Note that while this functionality is provided, rescaling the time of the Bayesian skyline plots from Migrate-n in calendar units should be done with caution as Migrate-n is not specifically designed for this purpose. Consult Migrate-n documentations if you want to know more on this topic. When these arguments are left as for default values (i.e. =1), the unit of time is unchanged as in the example below.
 
-With a similar approach as for `mtrace`, if you leave `dir.in` and  `skylinefile` with their default values (i.e. `NULL`), an interactive window will pop up to manually select the *skylinefile*. If you pass a path with `dir.in`, but not a name for `skylinefile`, `BSP` will assume that you used Migrate-n default name *skylinefile*. If you leave the default `dir.out=NULL`, but `save2disk=TRUE`, `BSP` will save the results in the same folder where the *skylinefile* is.
+With a similar approach as for `mtrace`, if you leave `dir.in` and  `skylinefile` with their default values (i.e. `NULL`), an interactive window will pop up to manually select the *skylinefile*. If you pass a path with `dir.in`, but not a name for `skylinefile`, `BSP` will assume that you used Migrate-n default name: *skylinefile*. If you leave the default `dir.out=NULL`, but `save2disk=TRUE`, `BSP` will save the results in the same folder where the *skylinefile* is.
 
 The only additional argument that we have to mention is `params`, which takes a vector of parameter numbers (as listed in Migrate-n output file) to be plotted.
 
@@ -176,10 +176,10 @@ bsp_plots[[3]]
 
 
 
-# multi.BSP
+## `multi.BSP`
 `multi.BSP` takes as 2 separate input data equal to the first element of the output from `BSP` or `meta.BSP`, reduced to a unique parameter and a unique locus and generates a figure where two BSP are concurrently plotted.
 
-The panel a of Figure 6 from in Pacioni et al (2015) was generated with `multi.BSP` and then slightly modified in R using (remember that plots are returned as ggplot objects and can be edited post-production).
+The panel a of Figure 6 in Pacioni et al (2015) was generated with `multi.BSP` and then slightly modified in R (remember that plots are returned as ggplot objects and can be edited post-production).
 
 
 
@@ -188,16 +188,22 @@ knitr::include_graphics("Multi_BSP.tif")
 
 ```
 
-# meta.BSP
-When your analysis includes several populations from a meta-population system, you may want to calculate and plot the size of the meta-population (i.e. the total). `meta.BSP` takes as input the first element of the output from BSP and combines (i.e. sums) the values of the parameters passed with the argument `params`. 
+## `meta.BSP`
+When your analysis includes several populations from a meta-population system, you may want to calculate and plot the size of the meta-population (i.e. the total). `meta.BSP` takes as input the first element of the output from `BSP` and combines (i.e. sums) the values of the parameters passed with the argument `params`. 
 
 In the situation where multiple loci are used in the analysis, the argument `locus` can be used to indicate which locus should be used. If `locus="max"`, then the largest locus number is used (which corresponds to the sum over all loci for multi-locus analyses).
 
-`meta.BSP` was used to initially calculate this sum over a four population system, and then two plots combined together with `multi.BSP`. 
+In the figure above, `meta.BSP` was used to initially calculate this sum over a four population system, and then two plots combined together with `multi.BSP` to present the reconstruction of the woylie (*Bettongia penicillata ogilbyi*) demographic history based on control region of mtDNA. 
 
 
 # References
 Beerli, P. (2006). Comparison of Bayesian and maximum-likelihood inference of population genetic parameters. Bioinformatics 22, 341-345.  
+
+Beerli, P. & Palczewski, M. (2010) Unified framework to evaluate panmixia and migration direction among multiple sampling locations. Genetics, 185, 313-326.
+
+Drummond, A.J. & Bouckaert, R.R. (2015) Bayesian evolutionary analysis with BEAST. Cambridge University Press.
+
+Lemey, P., Salemi, M. & Vandamme, A. (2009) The phylogenetic handbook: a practical approach to phylogenetic analysis and hypothesis testing. Cambridge University Press.
 
 Pacioni, C., Hunt, H., Allentoft, M.E., Vaughan, T.G., Wayne, A.F., Baynes, A., Haouchar, D., Dortch, J. & Bunce, M. (2015) Genetic diversity loss in a biodiversity hotspot: ancient DNA quantifies genetic decline and former connectivity in a critically endangered marsupial. Molecular Ecology, 24, 5813-5828.
 
