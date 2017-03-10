@@ -53,4 +53,3 @@ but \code{dir.in=NULL}, the directory path is selected iteractively.
 
 If \code{dir.out=NULL} (default) then \code{dir.out=dir.in}.
 }
-

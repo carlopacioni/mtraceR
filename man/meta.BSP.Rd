@@ -34,4 +34,3 @@ When multiple loci are used in the analysis, the argument \code{locus} can
   then the lastgest locus number is used (which corresponds to the sum over 
   all loci for multi-locus analyses).
 }
-

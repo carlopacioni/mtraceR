@@ -16,4 +16,3 @@ data(mtDNA_4popsSt)
   model between either sites 1 or 2 and 3 and 4
   (i.e. migration model: {* * 0 *   * * 0 *   0 0 * *   * * * *}).
 }
-

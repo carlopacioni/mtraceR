@@ -21,8 +21,10 @@ Limited testing has been conducted with migrate-n outputs from sequence and
 microsatellite data only.
 
 ## Documentation
-Pending
+Use help(package = "mtraceR") to see the documentations available. For help on specific functions use ?function\_name, where function_name is the name of the function you are seeking information for.
+
+A short [tutorial](https://www.researchgate.net/publication/314538370_mtraceR_a_quick_intro) can also be downloaded as PDF.
 
 ## Citation
 If you use `mtraceR`, please cite:
-Pending
+Pacioni C, Hunt H, Allentoft ME, et al. (2015) [Genetic diversity loss in a biodiversity hotspot: ancient DNA quantifies genetic decline and former connectivity in a critically endangered marsupial](http://researchrepository.murdoch.edu.au/id/eprint/29217/). Molecular Ecology, 24, 5813-5828.

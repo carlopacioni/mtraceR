@@ -15,4 +15,3 @@ data(ms_3popsSt)
   microsatellite data with 4 sampling sites grouped in three populations 
   connected by a stepping stone migration model.
 }
-

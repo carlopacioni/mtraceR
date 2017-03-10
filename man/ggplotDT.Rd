@@ -15,4 +15,3 @@ See \url{from http://r.789695.n4.nabble.com/ggplot2-and-data-table-td3743483.htm
   
 Credit to Timothée Carayol
 }
-

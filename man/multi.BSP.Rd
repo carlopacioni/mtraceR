@@ -27,4 +27,3 @@ A list with the combined data (as data.table) and a BSP.
   the output from \code{BSP} reduced to a unique parameter and a unique locus 
   and generates a figure where two BSP are concurrently plotted.
 }
-

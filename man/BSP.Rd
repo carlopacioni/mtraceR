@@ -44,4 +44,3 @@ A list where the first element is a data.table with skyline data and
   when \code{gen} and \code{mu} are provided. The column "Ne" is the 
   effective population size, calculated as theta/(x * mu).
 }
-

@@ -29,4 +29,3 @@ strong evidence in favour of the reference model (Kass and Raftery 1995).
  mod.comp <- BF(c(-4862.85, -4860.58, -4863.08, -4887.25))
  mod.comp
 }
-
