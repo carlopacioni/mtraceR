@@ -118,7 +118,7 @@ These data are also saved to disk as .csv files when `save2disk=TRUE`.
 Hopefully, the traces of your own run will look more similar to Figure 3.  
 
 ```{r, echo=FALSE, out.width=450, fig.cap="__Figure 3.__ Overimposed traces (one colour for each replicate) of the analysis of a microsatellite locus and density of posterior distribution"}
-knitr::include_graphics("Good_trace2.tif")
+knitr::include_graphics("Good_Trace2.tif")
 ```
 
 You can see that in Figure 3 the mixing is much better. Each replicate is plotted with a different colour and the smooth clearly indicate that convergence was achieved (note how the horizontal lines - the smooths - are flat and close to each other).  
