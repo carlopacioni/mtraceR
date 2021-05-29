@@ -85,7 +85,7 @@ NULL
 #' @param heating Whether heating is used: (\code{TRUE} or \code{FALSE})
 #' @param nchain Number of chains if \code{heating=TRUE}
 #' @param burn.in Length of burn-in as proportion of MCMC (default: 0.1)
-#' @param trim Whether trim data to estimated parameters (i.e. theta and M. 
+#' @param trim_params Whether trim data to estimated parameters (i.e. theta and M. 
 #'   default:  TRUE)
 #' @param thin the thinning interval of recorded steps of trace plots
 #' @param bayesallfile The name of the bayesallfile (default: NULL)
@@ -99,7 +99,7 @@ NULL
 #' @import data.table
 #' @import coda
 #' @export
-mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE, 
+mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim_params=TRUE, 
                    thin=10, bayesallfile=NULL, dir.in=NULL, 
                    dir.out=NULL, save2disk=TRUE) {
     
@@ -228,7 +228,7 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE,
   l.locus.mrepl <- lapply(l.locus.repl, make.mcmc)
   l.locus.mreplno.burn <- lapply(l.locus.mrepl, rm.burn, burn=burn)
   l.mlLocus.mrepl <- lapply(l.locus.mreplno.burn, mcmc.list)
-  if(repl > 1 | trim == TRUE) {
+  if(repl > 1 | trim_params == TRUE) {
     l.mlLocus.mrepltr <- lapply(l.mlLocus.mrepl, trim.data, last.col=parlast)
   }
   message("Done!")
@@ -261,7 +261,7 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim=TRUE,
     i <- seq_along(l.mlLocus.mrepl)
     
     pdf(file=paste0(dir.out, "/", "TracePlots_burninRemoved.pdf"))
-    if(trim == TRUE) {
+    if(trim_params == TRUE) {
       if(thin > 1) {
         after.thin <- lapply(l.mlLocus.mrepltr, window, thin=thin)
         lapply(i, plot.with.name, x=after.thin)
