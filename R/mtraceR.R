@@ -220,6 +220,11 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim_params=TRUE,
   }
   message("Done!")
   
+  if(save2disk) save(data, 
+                     file = file.path(dir.out, 
+                                    paste0(sub(bayesallfile, pattern="\\.gz$", ""), 
+                                             ".rda")))
+  
   message("Data processing started")
   l.locus <- split(data[, 2:parlast], data$Locus)
   l.locus.repl <- lapply(l.locus, byRepl)
