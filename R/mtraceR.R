@@ -222,7 +222,8 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim_params=TRUE,
   
   if(save2disk) save(data, 
                      file = file.path(dir.out, 
-                                    paste0(sub(bayesallfile, pattern="\\.gz$", ""), 
+                                    paste0(sub(x = bayesallfile, pattern="\\.gz$", 
+                                               replacement = ""), 
                                              ".rda")))
   
   message("Data processing started")
