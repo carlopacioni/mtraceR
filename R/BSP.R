@@ -63,7 +63,7 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL, all.loci=TRUE,
                 overall=TRUE, params=1, gen=1, mu=1, save2disk=TRUE){
 
   #----------------------------------------------------------------------------#
-  # Helper funstions
+  # Helper functions
   #----------------------------------------------------------------------------#
   #############################################
   # from http://r.789695.n4.nabble.com/ggplot2-and-data-table-td3743483.html
