@@ -273,7 +273,7 @@ meta.BSP <- function(data=NULL, dir.out=NULL, params=NULL, locus="max",
 #' @param col1,col2 The colour to be used for the BSPs
 #' @param y.title The title for the y-axis (default="")
 #' @param dir.out The local path to store the results. If NULL (default) then
-#'  \code{dir.out=wd()}
+#'  \code{dir.out=getwd()}
 #' @param save2disk Whether to save results to disk (default: TRUE)
 #' @return A list with the combined data (as data.table) and a BSP.
 #' @import data.table
@@ -315,7 +315,7 @@ multi.BSP <- function(data1=NULL, data2=NULL, col1="black", col2="red",
   
   #----------------------------------------------------------------------------#
         
-  if(is.null(dir.out)) dir.out <- wd()
+  if(is.null(dir.out)) dir.out <- getwd()
   data <- list(data1, data2)
   data <- lapply(data, err.handling)
   data <- lapply(data, adj.length)
