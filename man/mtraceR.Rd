@@ -3,7 +3,6 @@
 \docType{package}
 \name{mtraceR}
 \alias{mtraceR}
-\alias{mtraceR-package}
 \title{mtraceR: an R package to analyse migrate-n output}
 \description{
 \code{mtraceR} can be used to visualise trace of MCMC chains, calculate 

@@ -4,9 +4,17 @@
 \alias{mtrace}
 \title{Diagnostics of migrate-n MCMC chains}
 \usage{
-mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, trim = TRUE,
-  thin = 10, bayesallfile = NULL, dir.in = NULL, dir.out = NULL,
-  save2disk = TRUE)
+mtrace(
+  heating = TRUE,
+  nchain = 4,
+  burn.in = 0.1,
+  trim_params = TRUE,
+  thin = 10,
+  bayesallfile = NULL,
+  dir.in = NULL,
+  dir.out = NULL,
+  save2disk = TRUE
+)
 }
 \arguments{
 \item{heating}{Whether heating is used: (\code{TRUE} or \code{FALSE})}
@@ -15,7 +23,7 @@ mtrace(heating = TRUE, nchain = 4, burn.in = 0.1, trim = TRUE,
 
 \item{burn.in}{Length of burn-in as proportion of MCMC (default: 0.1)}
 
-\item{trim}{Whether trim data to estimated parameters (i.e. theta and M. 
+\item{trim_params}{Whether trim data to estimated parameters (i.e. theta and M. 
 default:  TRUE)}
 
 \item{thin}{the thinning interval of recorded steps of trace plots}

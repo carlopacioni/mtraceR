@@ -3,7 +3,9 @@
 \name{ms_3popsSt}
 \alias{ms_3popsSt}
 \title{Example of \code{mtrace} output}
-\format{a \code{list} with 3 named elelments.}
+\format{
+a \code{list} with 3 named elelments.
+}
 \source{
 Pacioni et al. In prep.
 }

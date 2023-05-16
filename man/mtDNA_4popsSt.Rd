@@ -3,7 +3,9 @@
 \name{mtDNA_4popsSt}
 \alias{mtDNA_4popsSt}
 \title{Example of \code{mtrace} output}
-\format{a \code{list} with 3 named elelments.}
+\format{
+a \code{list} with 3 named elelments.
+}
 \source{
 Pacioni et al. In prep.
 }

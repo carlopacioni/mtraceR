@@ -4,8 +4,17 @@
 \alias{BSP}
 \title{Generate Bayesian skyline plots}
 \usage{
-BSP(dir.in = NULL, skylinefile = NULL, dir.out = NULL, all.loci = TRUE,
-  overall = TRUE, params = 1, gen = 1, mu = 1, save2disk = TRUE)
+BSP(
+  dir.in = NULL,
+  skylinefile = NULL,
+  dir.out = NULL,
+  all.loci = TRUE,
+  overall = TRUE,
+  params = 1,
+  gen = 1,
+  mu = 1,
+  save2disk = TRUE
+)
 }
 \arguments{
 \item{dir.in}{The local folder containing skylinefile files (default: NULL)}
@@ -41,6 +50,10 @@ A list where the first element is a data.table with skyline data and
   object and, when \code{save2disk==TRUE}, a csv file. These data are a 'clean
   up' version of these contained in the skyline file along with the upper and 
   lower limits. The column "Time" is the rescaled "Age" (from migrate output) 
-  when \code{gen} and \code{mu} are provided. The column "Ne" is the 
-  effective population size, calculated as theta/(x * mu).
+  when \code{gen} and \code{mu} are provided. If you want to obtain the effective 
+  population size (recall that Migrate-n returns theta=xmuNe for population size,
+  where x is the number of ploid - e.g. for mtDNA, 4 for nuclear loci, etc.) 
+  and mu is the mutation rate,
+  if this is the parameter that you are considering) you could obtain this by 
+  calculating Ne=theta/(x * mu).
 }
