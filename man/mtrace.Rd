@@ -11,6 +11,7 @@ mtrace(
   trim_params = TRUE,
   thin = 10,
   bayesallfile = NULL,
+  corruptBayesallfile = FALSE,
   dir.in = NULL,
   dir.out = NULL,
   save2disk = TRUE
@@ -30,6 +31,9 @@ default:  TRUE)}
 
 \item{bayesallfile}{The name of the bayesallfile (default: NULL)}
 
+\item{corruptBayesallfile}{Whether the user believe the bayesallfile is corrupted 
+and wants to attempt to fix it. Default FALSE for back compatibility.}
+
 \item{dir.in}{The local folder containing migrate-n output files (default: NULL)}
 
 \item{dir.out}{The local path to store the results. If NULL (default) then
@@ -39,7 +43,7 @@ default:  TRUE)}
 }
 \value{
 a list with the ESS for each locus, a summary of ESS across all loci 
-  and Gelamn's diagnostic if more replicates were run. See details for 
+  and Gelman's diagnostic if more replicates were run. See details for 
   additional outputs when \code{save2dis=TRUE}.
 }
 \description{
@@ -54,10 +58,15 @@ Rubin's convergence diagnostic for each locus. When \code{save2dis=TRUE}
 relevant diagnostic plots are also saved as a separate PDF.
 
 When no bayesallfile name and directory are provided (default), the output 
-file is selected with an iteractive window. Alternatively, when the directory 
+file is selected with an interactive window. Alternatively, when the directory 
 path is provided with \code{dir.in} and \code{bayesallfile=NULL}, the latter 
 is automatically set to "bayesallfile.gz". If the name of the file is provided,
-but \code{dir.in=NULL}, the directory path is selected iteractively.
+but \code{dir.in=NULL}, the directory path is selected interactively.
+
+If the analysed was interrupted, or recovered, it is possible that \code{mtrace}
+will throw an error. In such cases, it is possible to attempt repairing the file
+by setting \code{corruptBayesallfile=TRUE}. See further information on 
+\code{\link{cleanBayesAll}}.
 
 If \code{dir.out=NULL} (default) then \code{dir.out=dir.in}.
 }

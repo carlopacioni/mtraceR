@@ -75,10 +75,15 @@ NULL
 #' relevant diagnostic plots are also saved as a separate PDF.
 #' 
 #' When no bayesallfile name and directory are provided (default), the output 
-#' file is selected with an iteractive window. Alternatively, when the directory 
+#' file is selected with an interactive window. Alternatively, when the directory 
 #' path is provided with \code{dir.in} and \code{bayesallfile=NULL}, the latter 
 #' is automatically set to "bayesallfile.gz". If the name of the file is provided,
-#' but \code{dir.in=NULL}, the directory path is selected iteractively.
+#' but \code{dir.in=NULL}, the directory path is selected interactively.
+#' 
+#' If the analysed was interrupted, or recovered, it is possible that \code{mtrace}
+#' will throw an error. In such cases, it is possible to attempt repairing the file
+#' by setting \code{fixcorruptBayesallfile=TRUE}. See further information on 
+#' \code{\link{cleanBayesAll}}.
 #' 
 #' If \code{dir.out=NULL} (default) then \code{dir.out=dir.in}. 
 #' 
@@ -89,18 +94,21 @@ NULL
 #'   default:  TRUE)
 #' @param thin the thinning interval of recorded steps of trace plots
 #' @param bayesallfile The name of the bayesallfile (default: NULL)
+#' @param fixcorruptBayesallfile Whether the user believe the bayesallfile is corrupted 
+#'    and wants to attempt to fix it. Default FALSE for back compatibility.
 #' @param dir.in The local folder containing migrate-n output files (default: NULL) 
 #' @param dir.out The local path to store the results. If NULL (default) then
 #'  \code{dir.out=dir.in}
 #' @param save2disk Whether to save results to disk (default: TRUE)
 #' @return a list with the ESS for each locus, a summary of ESS across all loci 
-#'   and Gelamn's diagnostic if more replicates were run. See details for 
+#'   and Gelman's diagnostic if more replicates were run. See details for 
 #'   additional outputs when \code{save2dis=TRUE}.
 #' @import data.table
 #' @import coda
 #' @export
 mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim_params=TRUE, 
-                   thin=10, bayesallfile=NULL, dir.in=NULL, 
+                   thin=10, bayesallfile=NULL, fixcorruptBayesallfile=FALSE,
+                   dir.in=NULL, 
                    dir.out=NULL, save2disk=TRUE) {
     
   #----------------------------------------------------------------------------#
@@ -196,7 +204,9 @@ mtrace <- function(heating=TRUE, nchain=4, burn.in=0.1, trim_params=TRUE,
   }
   
   if(is.null(dir.out)) dir.out <- dir.in
-  
+     # attempt to fix bayesallfile if the user indicates it is corrupted
+  if(fixcorruptBayesallfile) cleanBayesAll(dir.in, bayesallfile)
+     
   message(paste("Parsing", bayesallfile))
   rl <- readLines(paste0(dir.in, "/", bayesallfile), n=100)
   patt <- grep(pattern = "^# @@@@@@@@", rl)
