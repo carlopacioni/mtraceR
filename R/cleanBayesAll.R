@@ -14,10 +14,12 @@
 #' times but Migrate-n uses the second instance to restart the run, so you restart
 #' the run always from the same point rather than from the last processed locus.
 #' This function tries to clean up the file by removing incomplete lines and the
-#' unecessary text, so that it can be read as a table, and 
+#' unnecessary text, so that it can be read as a table, and 
 #' if you restart the run, it will resume form the last processed locus.
 #' 
-#'  @inheritParams mtrace
+#' @inheritParams mtrace
+#' @return Invisibly, the bayesAllFile content as a character vector
+#' @export
 cleanBayesAll <- function(dir.in, bayesallfile="bayesallfile.gz") {
   need2write <- FALSE
   suppressWarnings(

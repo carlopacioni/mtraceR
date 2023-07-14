@@ -5,12 +5,13 @@
 #' @param runOptions Character vector to pre-append to the command being issued. 
 #'    The default assume that you are running migrate in parallel using openMPI
 #'     (`"mpirun --use-hwthread-cpus"`)
-#'     @param migratePath Character vector with the path to migrate excutable
-#'     @param migrateExecutable The name of the executable (default `migrate-n-mpi`)
-#'     @param nProcessors The number of processor to be used. If `"auto"`, the maximum 
+#' @param migratePath Character vector with the path to migrate excutable
+#' @param migrateExecutable The name of the executable (default `migrate-n-mpi`)
+#' @param nProcessors The number of processor to be used. If `"auto"`, the maximum 
 #'     number of processors available will be used
-#'     @param pathParmfile The path to the param file (default `"./"`
-#'     @param parmfile The name of the parmfile (default `"parmfile"`)
+#' @param pathParmfile The path to the param file (default `"./"`
+#' @param parmfile The name of the parmfile (default `"parmfile"`)
+#' @export
 runMigrate <- function(runOptions="mpirun --use-hwthread-cpus", 
                        migratePath="", migrateExecutable="migrate-n-mpi",
                        nProcessors="auto", 
