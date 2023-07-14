@@ -11,7 +11,7 @@ mtrace(
   trim_params = TRUE,
   thin = 10,
   bayesallfile = NULL,
-  corruptBayesallfile = FALSE,
+  fixcorruptBayesallfile = FALSE,
   dir.in = NULL,
   dir.out = NULL,
   save2disk = TRUE
@@ -31,7 +31,7 @@ default:  TRUE)}
 
 \item{bayesallfile}{The name of the bayesallfile (default: NULL)}
 
-\item{corruptBayesallfile}{Whether the user believe the bayesallfile is corrupted 
+\item{fixcorruptBayesallfile}{Whether the user believe the bayesallfile is corrupted 
 and wants to attempt to fix it. Default FALSE for back compatibility.}
 
 \item{dir.in}{The local folder containing migrate-n output files (default: NULL)}
@@ -65,7 +65,7 @@ but \code{dir.in=NULL}, the directory path is selected interactively.
 
 If the analysed was interrupted, or recovered, it is possible that \code{mtrace}
 will throw an error. In such cases, it is possible to attempt repairing the file
-by setting \code{corruptBayesallfile=TRUE}. See further information on 
+by setting \code{fixcorruptBayesallfile=TRUE}. See further information on 
 \code{\link{cleanBayesAll}}.
 
 If \code{dir.out=NULL} (default) then \code{dir.out=dir.in}.
