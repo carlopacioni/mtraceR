@@ -13,6 +13,7 @@ BSP(
   params = 1,
   gen = 1,
   mu = 1,
+  mu_unit = "generation",
   save2disk = TRUE
 )
 }
@@ -33,7 +34,11 @@ loci (when \code{nloci>1})}
 
 \item{gen}{The generation time in unit of time (e.g. years)}
 
-\item{mu}{Mutation rate expressed in the same unit as \code{gen}}
+\item{mu}{Mutation rate expressed either  'per generation' basis or in the 
+same unit as \code{gen} (e.g. years)}
+
+\item{mu_unit}{The unit used for the mutation rate. Options are either 
+"generation" or "time"}
 
 \item{save2disk}{Whether to save results to disk (default: TRUE)}
 }

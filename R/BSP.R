@@ -52,7 +52,10 @@ ggplotDT <- function(...) {
 #'  \code{dir.out=dir.in}
 #' @param params A vector of parameter numbers to be plotted
 #' @param gen The generation time in unit of time (e.g. years)
-#' @param mu Mutation rate expressed in the same unit as \code{gen}
+#' @param mu Mutation rate expressed either  'per generation' basis or in the 
+#'  same unit as \code{gen} (e.g. years)
+#' @param mu_unit The unit used for the mutation rate. Options are either 
+#'    "generation" or "time"
 #' @param all.loci Whether the parameter should be plotted for each locus
 #' @param overall Whether the parameter should be plotted for the sum over all 
 #'   loci (when \code{nloci>1})
@@ -64,7 +67,8 @@ ggplotDT <- function(...) {
 #' @import gridExtra
 #' @export
 BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL, all.loci=TRUE, 
-                overall=TRUE, params=1, gen=1, mu=1, save2disk=TRUE){
+                overall=TRUE, params=1, gen=1, mu=1, mu_unit="generation", 
+                save2disk=TRUE) {
 
   #----------------------------------------------------------------------------#
   # Helper functions
@@ -126,6 +130,8 @@ BSP <- function(dir.in=NULL, skylinefile=NULL, dir.out=NULL, all.loci=TRUE,
   }
   #----------------------------------------------------------------------------#
   
+  if(mu_unit == "time") mu <- mu * gen else
+    if(mu_unit!="generation") stop("The argument 'mu_unit' can only be eithe 'generation' or 'time'")
 
   if(is.null(skylinefile) & is.null(dir.in)) {
     message("Please, select the skylinefile to import")
